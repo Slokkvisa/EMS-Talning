@@ -1,0 +1,442 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body,div,span,p,button,input{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.tab-btn{padding:8px 18px;font-size:14px;border:1px solid transparent;border-radius:20px;background:transparent;cursor:pointer;color:#666;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}
+.tab-btn.active{background:#fff;color:#1a1a1a;border-color:#ccc;font-weight:500}
+.group-box{border:1px solid #d0cec7;border-radius:12px;background:#fff;overflow:hidden}
+.group-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #eee}
+.g-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.g-title{font-size:15px;font-weight:600;color:#1a1a1a;flex:1}
+.g-badge{font-size:12px;padding:3px 9px;border-radius:20px;font-weight:500}
+.sec-head{display:flex;align-items:center;padding:7px 16px;background:#f8f7f4;border-bottom:1px solid #eee;border-top:1px solid #eee}
+.sec-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.06em;flex:1}
+.sec-count{font-size:11px;color:#888}
+.item-row{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;border-bottom:1px solid #f2efe9;transition:background 0.1s;user-select:none}
+.item-row:last-child{border-bottom:none}
+.item-row:hover{background:#f8f7f4}
+.item-row.done .item-label{text-decoration:line-through;color:#aaa}
+.item-label{font-size:15px;color:#1a1a1a;line-height:1.4;flex:1}
+.chk{width:22px;height:22px;min-width:22px;border:2px solid #bbb;border-radius:5px;background:#fff;display:flex;align-items:center;justify-content:center;transition:all 0.12s;flex-shrink:0;position:relative}
+.chk.on{background:#1D9E75;border-color:#1D9E75}
+.chk.on::after{content:'';position:absolute;width:6px;height:11px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-2px)}
+.prog-track{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
+.prog-fill{height:6px;background:#1D9E75;border-radius:3px;transition:width 0.4s ease}
+.sig-area{border:1px solid #ccc;border-radius:8px;background:#f8f7f4;cursor:crosshair;display:block;width:100%;touch-action:none}
+input[type=text]{padding:10px 14px;font-size:14px;border:1px solid #ccc;border-radius:8px;outline:none;color:#1a1a1a;font-family:inherit}
+input[type=text]:focus{border-color:#1D9E75}
+button{padding:10px 16px;font-size:14px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;color:#1a1a1a;transition:all 0.15s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+button:hover{background:#f0ede8;border-color:#bbb}
+.btn-primary{background:#1D9E75;color:#fff;border-color:#1D9E75;justify-content:center;font-weight:500}
+.btn-primary:hover{background:#0F6E56;border-color:#0F6E56}
+.btn-warning{background:#E8A020;color:#fff;border-color:#E8A020;justify-content:center;font-weight:500}
+.btn-warning:hover{background:#c47d10;border-color:#c47d10}
+.history-row{padding:13px 16px;border:1px solid #d0cec7;border-radius:10px;background:#fff;margin-bottom:8px;cursor:pointer;transition:border-color 0.1s}
+.history-row:hover{border-color:#999}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:640px;box-shadow:0 8px 40px rgba(0,0,0,0.18);overflow:hidden;margin:auto}
+.modal-head{padding:18px 20px 14px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:12px}
+.modal-body{padding:20px;max-height:60vh;overflow-y:auto}
+.modal-footer{padding:14px 20px;border-top:1px solid #eee;display:flex;gap:8px;flex-wrap:wrap}
+.email-section{border-top:1px solid #eee;padding:16px 20px;background:#f8f7f4}
+.missing-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#FFF8F0;border:1px solid #FDDCB5;border-radius:8px;margin-bottom:5px}
+@media print{.no-print{display:none!important}.print-only{display:block!important}}
+.print-only{display:none}
+</style>
+
+<div style="padding:1rem 0;max-width:960px;margin:0 auto">
+
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+    <div style="width:48px;height:48px;border-radius:12px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🚑</div>
+    <div style="flex:1;min-width:0">
+      <p style="font-size:18px;font-weight:600;color:#1a1a1a">41-101 — Vaktaskiptaeftirlit</p>
+      <p style="font-size:13px;color:#666;margin-top:2px" id="week-label"></p>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <p style="font-size:22px;font-weight:600;color:#1a1a1a" id="prog-num">0/0</p>
+      <p style="font-size:12px;color:#666" id="prog-pct">0%</p>
+    </div>
+  </div>
+
+  <div class="prog-track" style="margin-bottom:18px"><div class="prog-fill" id="prog-bar" style="width:0%"></div></div>
+
+  <div style="margin-bottom:18px">
+    <div style="display:inline-flex;gap:4px;background:#eeece6;border-radius:24px;padding:4px;border:1px solid #ddd">
+      <button class="tab-btn active" id="tab-list" onclick="showTab('list')">✓ Gátlisti</button>
+      <button class="tab-btn" id="tab-history" onclick="showTab('history')">⏱ Saga</button>
+    </div>
+  </div>
+
+  <div id="view-list">
+    <div id="checklist-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;align-items:start"></div>
+
+    <div style="margin-top:16px;border:1px solid #d0cec7;border-radius:12px;padding:16px;background:#fff">
+      <p style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <span style="width:28px;height:28px;border-radius:7px;background:#E6F1FB;display:inline-flex;align-items:center;justify-content:center">✍️</span>
+        Undirskrift
+      </p>
+      <canvas id="sig-canvas" class="sig-area" width="800" height="110" style="height:110px"></canvas>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <input type="text" id="signer-name" placeholder="Nafn undirritara..." style="flex:1"/>
+        <button onclick="clearSig()">🧹</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn-warning" onclick="showReport()" style="flex:1;min-width:150px">📋 Skýrsla um vöntun</button>
+      <button class="btn-primary" onclick="sendReportEmail()" style="flex:1;min-width:150px">📧 Vista og senda skýrslu</button>
+      <button onclick="resetAll()" title="Núllstilla">↺</button>
+    </div>
+    <div id="save-status" style="margin-top:10px;font-size:13px;padding:10px 14px;border-radius:8px;display:none"></div>
+  </div>
+
+  <div id="view-history" style="display:none">
+    <div id="history-list"></div>
+    <div id="history-detail" style="display:none">
+      <button onclick="closeDetail()" style="margin-bottom:14px">← Til baka</button>
+      <div id="detail-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Skýrslugluggi -->
+<div class="modal-bg" id="report-modal" style="display:none" onclick="closeReportOnBg(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div style="width:38px;height:38px;border-radius:10px;background:#FFF0D6;display:flex;align-items:center;justify-content:center;font-size:20px">📋</div>
+      <div style="flex:1">
+        <p style="font-size:16px;font-weight:600;color:#1a1a1a">Skýrsla um vöntun</p>
+        <p style="font-size:12px;color:#666" id="report-subtitle"></p>
+      </div>
+      <button onclick="closeReport()" style="border:none;background:none;font-size:20px;color:#999;cursor:pointer;padding:4px">✕</button>
+    </div>
+    <div class="modal-body" id="report-body"></div>
+    <div class="modal-footer">
+      <button onclick="printReport()" style="flex:1;justify-content:center">🖨️ Prenta</button>
+      <button onclick="closeReport()" style="flex:1;justify-content:center">Loka</button>
+    </div>
+  </div>
+</div>
+
+<div class="print-only" id="print-area"></div>
+
+<script>
+const REPORT_EMAIL = 'slokkvilid@isafjordur.is';
+
+const groupDefs = [
+  {title:"Skápur 1",icon:"🔧",bg:"#FAEEDA",subs:[{label:null,items:["2x SAM spelkur","1x Þrýsti poki fyrir vökva","Bangsar","Barna Peltor"]}]},
+  {title:"Skápur 2",icon:"🔧",bg:"#E6F1FB",subs:[{label:null,items:["Fæðingarböggull","Brunataska (rauð)","2x Álteppi","Einota maskar","Bráðaflokkunartaska","Ungbarna SPO2 fyrir LP15"]}]},
+  {title:"Skápur 3",icon:"🔧",bg:"#EEEDFE",subs:[{label:null,items:["1x Öndunarbelgur fullorðnir","1x Öndunarbelgur barna","BP cuff fyrir LP15 Ungbarna","BP cuff fyrir LP15 Barna","BP cuff fyrir LP15 L Adult"]}]},
+  {title:"Skápur 4",icon:"🔧",bg:"#FBEAF0",subs:[{label:null,items:["2x Marski með sarp","1x Marski með sarp (Barna)","2x gleraugu","2x O² gleraugu m/ capno","Friðarpípa","Capno á túbur 2 stærðir","CPAP"]}]},
+  {title:"Skápur 5",icon:"🔧",bg:"#EAF3DE",subs:[{label:null,items:["1x Elektróðupakkning","1x Stuð patchar fullorðnir","1x Stuð patchar barna","1x Sogleggur harður","1x Rakvél","1x Skurðhnífur","2x Kælipokar","3x Vökvasett","2x Chest seal","2x Öryggisgleraugu","Hlustunarpípa","1x borði í LP15","1x Penthrox","Bluetooth heyrnatól"]}]},
+  {title:"Skápur 6",icon:"🛏️",bg:"#F1EFE8",subs:[{label:null,items:["Grjónadýna"]}]},
+  {title:"Skápur 7",icon:"🔧",bg:"#E6F1FB",subs:[{label:null,items:["Lucas","Sárataska (gul)"]}]},
+  {title:"Skápur 8",icon:"💨",bg:"#E1F5EE",subs:[{label:null,items:["Öndunaraðstöð taska (blá)","Grjónaspelkur"]}]},
+  {title:"Skápur 9",icon:"🔴",bg:"#FCEBEB",subs:[{label:null,items:["Acute taska (rauð)"]}]},
+  {title:"Skúffur",icon:"📦",bg:"#F5F0E8",subs:[
+    {label:"Skúffa 1",items:["1x Stasi (2-4 gúmmí einnota)","Teip hvítt","Teip brúnt"]},
+    {label:"Skúffa 2",items:["5x IV plástrar","Tuffur ca.10"]},
+    {label:"Skúffa 3",items:["2x IN lúðrar","5x 18G bleikar nálar","5x 25G Gular nálar","4x tappar"]},
+    {label:"Skúffa 4",items:["2x Nef tappi","O2 millistykki alskonar","2x Steristip"]},
+    {label:"Skúffa 5",items:["2x Fatli"]},
+    {label:"Skúffa 6",items:["5x 22G Bláar venflon","5x 20G Bleikar venflon","3x 18G Grænar venflon","3x 16G Grá venflon","3x 3way lokar m/skotti","5-10x Sprittklútar"]},
+    {label:"Skúffa 7",items:["4x 1ml sprautur","4x 2ml sprautur","3x 10ml sprautur","1x 20ml sprauta","1x 50ml sprauta"]},
+    {label:"Skúffa 8",items:["Hitamælir og hlífar","Blóðsykurmælir","5-8x blóðsykursnálar"]},
+    {label:"Skúffa 9",items:["3x stórt teygjubindi","3x lítið teygjubindi"]},
+    {label:"Skúffa 10",items:["4x 10ml NaCl prefill","2x 120ml NaCl","1x Sykurgel"]},
+    {label:"Skúffa 11",items:["5x 10x10cm grisjur"]},
+    {label:"Skúffa 12",items:["Fataskæri","2x Skæri","Pincher","Ljós","Snarvöndull","Rakvél einnota","Skurðarhnífur","Hringskeri"]},
+    {label:"Skúffa 13",items:["5-8x Ælupokar"]},
+    {label:"Skúffa 14",items:["Hanskar latex L, M og S"]}
+  ]},
+  {title:"Hliðarhurð vinstri",icon:"🚪",bg:"#E6F1FB",subs:[{label:null,items:["Hálskragar (rauð taska)","Togspelka","Togspelka barna","Skröpur og ólar","Stigastóll","2x 10L O² kútar","2x Kakkalakkar","6L slökkvitæki"]}]},
+  {title:"13 Skúffur fremst",icon:"📋",bg:"#F1EFE8",subs:[{label:null,items:["Plastpokar","Dýramaski"]}]},
+  {title:"12 Hitaskúffa",icon:"🌡️",bg:"#FCEBEB",subs:[{label:null,items:["2x 1000ml NaCl","2x 1000ml Ringer","1x 500ml Glukose"]}]},
+  {title:"11 Skúffur fremst",icon:"📋",bg:"#F1EFE8",subs:[{label:null,items:["Auka lín"]}]},
+  {title:"Ökumannsrými",icon:"🚗",bg:"#E1F5EE",subs:[{label:null,items:["3x Snjóflóðaýlar","1x Tetra handstöð","2x Hjálmar","Hanskar latex S, M & L","Lyklar (slysó og fl.)","Sólgleraugu","Eyrnatappar","2x Heyrnarhlífar (Peltor)","Ljóskastari (USB hleðsla)","2x Þyrlublys","Bluetooth heyrnatól","4x Drykkir fyrir áhöfn","Veirumaskar","2x Mannbroddar"]}]}
+];
+
+const DB_KEY='ambulance_41101_v3';
+let state={};
+function key(g,sub,item){return g.title+':::'+(sub.label||'')+':::'+item;}
+groupDefs.forEach(g=>g.subs.forEach(sub=>sub.items.forEach(item=>{state[key(g,sub,item)]={done:false};})));
+
+function getWeekLabel(){
+  const now=new Date(),day=now.getDay(),diff=now.getDate()-day+(day===0?-6:1);
+  const mon=new Date(now);mon.setDate(diff);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  const fmt=d=>d.toLocaleDateString('is-IS',{day:'numeric',month:'long'});
+  const wn=d=>{const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const dn=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-dn);const ys=new Date(Date.UTC(dt.getUTCFullYear(),0,1));return Math.ceil((((dt-ys)/86400000)+1)/7);};
+  return 'Vika '+wn(mon)+' · '+fmt(mon)+' – '+fmt(sun);
+}
+document.getElementById('week-label').textContent=getWeekLabel();
+
+function render(){
+  const body=document.getElementById('checklist-body');body.innerHTML='';
+  let total=0,done=0;
+  groupDefs.forEach(g=>{
+    let gT=0,gD=0;
+    g.subs.forEach(sub=>sub.items.forEach(item=>{const k=key(g,sub,item);gT++;total++;if(state[k].done){gD++;done++;}}));
+    const allDone=gD===gT;
+    const box=document.createElement('div');box.className='group-box';
+    let html=`<div class="group-head"><div class="g-icon" style="background:${g.bg}">${g.icon}</div>
+      <span class="g-title">${g.title}</span>
+      <span class="g-badge" style="background:${allDone?'#E1F5EE':'#f0ede8'};color:${allDone?'#085041':'#888'}">${gD}/${gT}</span></div>`;
+    g.subs.forEach(sub=>{
+      let sd=0;sub.items.forEach(item=>{if(state[key(g,sub,item)].done)sd++;});
+      if(sub.label)html+=`<div class="sec-head"><span class="sec-label">${sub.label}</span><span class="sec-count">${sd}/${sub.items.length}</span></div>`;
+      sub.items.forEach(item=>{
+        const k=key(g,sub,item);const s=state[k];
+        const ek=k.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        html+=`<div class="item-row${s.done?' done':''}" onclick="toggle('${ek}')"><div class="chk${s.done?' on':''}"></div><span class="item-label">${item}</span></div>`;
+      });
+    });
+    box.innerHTML=html;body.appendChild(box);
+  });
+  const pct=total>0?Math.round((done/total)*100):0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-num').textContent=done+'/'+total;
+  document.getElementById('prog-pct').textContent=pct+'%';
+}
+
+function toggle(k){state[k].done=!state[k].done;render();}
+
+function resetAll(){
+  if(!confirm('Hreinsa alla hakaninga og undirskrift?'))return;
+  Object.keys(state).forEach(k=>{state[k]={done:false};});
+  clearSig();document.getElementById('signer-name').value='';
+  document.getElementById('save-status').style.display='none';render();
+}
+
+function getMissingItems(){
+  const missing=[];
+  groupDefs.forEach(g=>{
+    const gm=[];
+    g.subs.forEach(sub=>sub.items.forEach(item=>{if(!state[key(g,sub,item)].done)gm.push({item,sublabel:sub.label});}));
+    if(gm.length)missing.push({group:g,items:gm});
+  });
+  return missing;
+}
+
+function buildEmailBody(){
+  const missing=getMissingItems();
+  const signer=document.getElementById('signer-name').value||'Óþekkt';
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  let body=`Vaktaskiptaeftirlit 41-101\n`;
+  body+=`=====================================\n`;
+  body+=`Vika: ${getWeekLabel()}\n`;
+  body+=`Undirritari: ${signer}\n`;
+  body+=`Dagsetning: ${new Date().toLocaleString('is-IS')}\n`;
+  body+=`Staða: ${done}/${total} liðir yfirfarnir\n`;
+  body+=`Vantar: ${total-done} liðir\n\n`;
+  if(!missing.length){
+    body+=`✅ Allir liðir eru í lagi — enginn búnaður vantar.\n`;
+  } else {
+    body+=`BÚNAÐUR SEM VANTAR:\n`;
+    body+=`-------------------\n`;
+    missing.forEach(({group,items})=>{
+      body+=`\n${group.title}:\n`;
+      let lastLabel=null;
+      items.forEach(({item,sublabel})=>{
+        if(sublabel&&sublabel!==lastLabel){body+=`  [${sublabel}]\n`;lastLabel=sublabel;}
+        body+=`  • ${item}\n`;
+      });
+    });
+  }
+  body+=`\n---\nSent sjálfkrafa úr 41-101 vaktaskiptakerfi.`;
+  return body;
+}
+
+function getRecords(){try{const v=localStorage.getItem(DB_KEY);return v?JSON.parse(v):[]}catch(e){return[];}}
+function saveRecs(r){try{localStorage.setItem(DB_KEY,JSON.stringify(r));}catch(e){}}
+
+function sendReportEmail(){
+  const name=document.getElementById('signer-name').value.trim();
+  const statusEl=document.getElementById('save-status');
+  statusEl.style.display='block';
+  if(!name){statusEl.style.background='#fde8e8';statusEl.style.color='#c0392b';statusEl.textContent='Skrifaðu nafn undirritara.';return;}
+  if(!isSigned()){statusEl.style.background='#fde8e8';statusEl.style.color='#c0392b';statusEl.textContent='Ritsalaðu á undirskriftarsvæðið.';return;}
+
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  const missing=getMissingItems();
+
+  // Vista locally
+  const record={id:Date.now(),week:getWeekLabel(),date:new Date().toISOString(),signer:name,signature:canvas.toDataURL('image/png'),total,done,missing_count:total-done,state:JSON.parse(JSON.stringify(state))};
+  const recs=getRecords();recs.unshift(record);saveRecs(recs);
+
+  // Búa til tölvupóst
+  const hasMissing=missing.length>0;
+  const subject=encodeURIComponent(
+    hasMissing
+      ? `⚠️ Vaktaskiptaeftirlit 41-101 — ${getWeekLabel()} — ${total-done} liðir vantar`
+      : `✅ Vaktaskiptaeftirlit 41-101 — ${getWeekLabel()} — Allt í lagi`
+  );
+  const body=encodeURIComponent(buildEmailBody());
+  const a=document.createElement('a');
+  a.href=`mailto:${REPORT_EMAIL}?subject=${subject}&body=${body}`;
+  a.click();
+
+  if(hasMissing){
+    statusEl.style.background='#fff3cd';statusEl.style.color='#856404';
+    statusEl.textContent=`✓ Vistað — tölvupóstur opnaður á ${REPORT_EMAIL} með ${total-done} vöntunarlíðum.`;
+  } else {
+    statusEl.style.background='#e8f5e9';statusEl.style.color='#0F6E56';
+    statusEl.textContent=`✓ Vistað — tölvupóstur opnaður á ${REPORT_EMAIL}. Allir ${total} liðir yfirfarnir!`;
+  }
+}
+
+// Skýrslugluggi
+function showReport(){
+  const missing=getMissingItems();
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  document.getElementById('report-subtitle').textContent=getWeekLabel()+' · '+(total-done)+' liðir vantar';
+  const body=document.getElementById('report-body');
+  if(!missing.length){
+    body.innerHTML=`<div style="text-align:center;padding:32px 20px">
+      <div style="font-size:48px;margin-bottom:12px">✅</div>
+      <p style="font-size:17px;font-weight:600;color:#0F6E56;margin-bottom:6px">Allt í lagi!</p>
+      <p style="font-size:14px;color:#666">Allir liðir eru yfirfarnir.</p></div>`;
+  } else {
+    let html=`<div style="background:#FFF8F0;border:1px solid #FDDCB5;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">⚠️</span>
+      <div><p style="font-size:14px;font-weight:600;color:#854F0B">${total-done} liðir vantar</p>
+      <p style="font-size:13px;color:#A0622A">Þessir liðir voru ekki hakað við</p></div></div>`;
+    missing.forEach(({group,items})=>{
+      html+=`<div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+          <span>${group.icon}</span>${group.title}
+          <span style="font-size:11px;background:#f0ede8;color:#888;padding:2px 7px;border-radius:10px">${items.length}</span>
+        </div>`;
+      let lastLabel=null;
+      items.forEach(({item,sublabel})=>{
+        if(sublabel&&sublabel!==lastLabel){html+=`<p style="font-size:11px;color:#aaa;text-transform:uppercase;margin:6px 0 4px 4px">${sublabel}</p>`;lastLabel=sublabel;}
+        html+=`<div class="missing-item"><div style="width:8px;height:8px;border-radius:50%;background:#E8A020;flex-shrink:0"></div><span style="font-size:14px">${item}</span></div>`;
+      });
+      html+=`</div>`;
+    });
+    body.innerHTML=html;
+  }
+  document.getElementById('report-modal').style.display='flex';
+}
+
+function printReport(){
+  const missing=getMissingItems();
+  const signer=document.getElementById('signer-name').value||'Óþekkt';
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  let html=`<div style="font-family:Arial,sans-serif;padding:20px;max-width:700px;margin:0 auto">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;border-bottom:3px solid #1D9E75;padding-bottom:12px">
+      <span style="font-size:28px">🚑</span>
+      <div><h1 style="font-size:18px;margin:0">41-101 — Vaktaskiptaeftirlit</h1>
+      <p style="font-size:13px;color:#666;margin:2px 0 0">${getWeekLabel()}</p></div>
+      <div style="margin-left:auto;text-align:right">
+        <p style="font-size:13px">Undirritari: <strong>${signer}</strong></p>
+        <p style="font-size:13px">Dagsetning: <strong>${new Date().toLocaleDateString('is-IS')}</strong></p>
+      </div>
+    </div>
+    <div style="background:#f0faf5;border:1px solid #b2dfcf;border-radius:8px;padding:12px 16px;margin-bottom:16px">
+      <p style="font-size:14px;color:#0F6E56"><strong>${done}/${total}</strong> liðir yfirfarnir · <strong>${total-done}</strong> vantar</p>
+    </div>`;
+  if(!missing.length){html+=`<p style="color:#0F6E56;font-weight:bold;font-size:15px">✅ Allir liðir eru í lagi.</p>`;}
+  else{
+    html+=`<h2 style="font-size:15px;margin-bottom:12px;color:#854F0B">⚠️ Búnaður sem vantar:</h2>`;
+    missing.forEach(({group,items})=>{
+      html+=`<div style="margin-bottom:14px"><h3 style="font-size:13px;color:#555;text-transform:uppercase;margin-bottom:6px">${group.icon} ${group.title}</h3>`;
+      items.forEach(({item,sublabel})=>{
+        html+=`<div style="padding:7px 10px;background:#FFF8F0;border:1px solid #FDDCB5;border-radius:6px;margin-bottom:4px;font-size:14px">● ${item}${sublabel?' ('+sublabel+')':''}</div>`;
+      });
+      html+=`</div>`;
+    });
+  }
+  html+=`<div style="margin-top:20px;padding-top:12px;border-top:1px solid #ddd">
+    <p style="font-size:13px;font-weight:bold;margin-bottom:6px">Undirskrift:</p>
+    <img src="${canvas.toDataURL('image/png')}" style="max-width:280px;border:1px solid #ddd;border-radius:6px"/>
+  </div>
+  <div style="margin-top:16px;font-size:11px;color:#999">Prentað: ${new Date().toLocaleString('is-IS')}</div></div>`;
+  const printDiv=document.getElementById('print-area');
+  printDiv.style.display='block';printDiv.innerHTML=html;window.print();
+  setTimeout(()=>{printDiv.style.display='none';},1000);
+}
+
+function closeReport(){document.getElementById('report-modal').style.display='none';}
+function closeReportOnBg(e){if(e.target===document.getElementById('report-modal'))closeReport();}
+
+const canvas=document.getElementById('sig-canvas');
+const ctx=canvas.getContext('2d');
+let drawing=false;
+function gp(e){const r=canvas.getBoundingClientRect();const sx=canvas.width/r.width;const sy=canvas.height/r.height;const s=e.touches?e.touches[0]:e;return{x:(s.clientX-r.left)*sx,y:(s.clientY-r.top)*sy};}
+canvas.addEventListener('mousedown',e=>{drawing=true;const p=gp(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=gp(e);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#185FA5';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();});
+canvas.addEventListener('mouseup',()=>drawing=false);
+canvas.addEventListener('mouseleave',()=>drawing=false);
+canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=gp(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
+canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=gp(e);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#185FA5';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();},{passive:false});
+canvas.addEventListener('touchend',()=>drawing=false);
+function clearSig(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+function isSigned(){const d=ctx.getImageData(0,0,canvas.width,canvas.height).data;for(let i=3;i<d.length;i+=4)if(d[i]>0)return true;return false;}
+
+function loadHistory(){
+  const listEl=document.getElementById('history-list');
+  const records=getRecords();
+  if(!records.length){listEl.innerHTML='<p style="font-size:14px;color:#888;padding:16px 0">Engar vistaðar yfirferðir enn.</p>';return;}
+  listEl.innerHTML='';
+  records.forEach(r=>{
+    const row=document.createElement('div');row.className='history-row';
+    const ok=r.done===r.total;
+    row.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div><p style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:2px">${r.week}</p>
+      <p style="font-size:13px;color:#666">Undirritað: ${r.signer} · ${new Date(r.date).toLocaleString('is-IS')}</p>
+      ${r.missing_count>0?`<p style="font-size:12px;color:#E8A020;margin-top:3px">⚠️ ${r.missing_count} liðir vantaði</p>`:''}</div>
+      <div style="text-align:right;flex-shrink:0">
+        <p style="font-size:18px;font-weight:600;color:${ok?'#0F6E56':'#E8A020'}">${r.done}/${r.total}</p>
+        <p style="font-size:12px;color:#666">${Math.round((r.done/r.total)*100)}%</p>
+      </div></div>`;
+    row.onclick=()=>showDetail(r);listEl.appendChild(row);
+  });
+}
+
+function showDetail(r){
+  document.getElementById('history-list').style.display='none';
+  document.getElementById('history-detail').style.display='block';
+  const el=document.getElementById('detail-content');
+  let html=`<div style="border:1px solid #d0cec7;border-radius:12px;padding:16px;background:#fff;margin-bottom:14px">
+    <p style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:3px">${r.week}</p>
+    <p style="font-size:13px;color:#666;margin-bottom:2px">Undirritað af: ${r.signer}</p>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">${new Date(r.date).toLocaleString('is-IS')} · ${r.done}/${r.total} liðir</p>
+    <img src="${r.signature}" style="width:100%;border-radius:8px;border:1px solid #ddd;max-height:120px;object-fit:contain" alt="Undirskrift"/>
+  </div>`;
+  if(r.missing_count>0)html+=`<div style="background:#FFF8F0;border:1px solid #FDDCB5;border-radius:10px;padding:12px 16px;margin-bottom:14px">
+    <p style="font-size:14px;font-weight:600;color:#854F0B">⚠️ ${r.missing_count} liðir vantaði í þessari yfirferð</p></div>`;
+  html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;align-items:start">`;
+  groupDefs.forEach(g=>{
+    let gT=0,gD=0;
+    g.subs.forEach(sub=>sub.items.forEach(item=>{const k=key(g,sub,item);gT++;if(r.state&&r.state[k]&&r.state[k].done)gD++;}));
+    const allDone=gD===gT;
+    html+=`<div class="group-box"><div class="group-head"><div class="g-icon" style="background:${g.bg}">${g.icon}</div>
+      <span class="g-title">${g.title}</span>
+      <span class="g-badge" style="background:${allDone?'#E1F5EE':'#FFF8F0'};color:${allDone?'#085041':'#854F0B'}">${gD}/${gT}</span></div>`;
+    g.subs.forEach(sub=>{
+      let sd=0;sub.items.forEach(item=>{if(r.state&&r.state[key(g,sub,item)]&&r.state[key(g,sub,item)].done)sd++;});
+      if(sub.label)html+=`<div class="sec-head"><span class="sec-label">${sub.label}</span><span class="sec-count">${sd}/${sub.items.length}</span></div>`;
+      sub.items.forEach(item=>{
+        const k=key(g,sub,item);const done=r.state&&r.state[k]&&r.state[k].done;
+        html+=`<div class="item-row${done?' done':''}" style="cursor:default;${!done?'background:#FFFAF5':''}">
+          <div class="chk${done?' on':''}"></div><span class="item-label">${item}</span>
+          ${!done?'<span style="font-size:11px;color:#E8A020;flex-shrink:0">vantar</span>':''}</div>`;
+      });
+    });
+    html+=`</div>`;
+  });
+  html+=`</div>`;
+  el.innerHTML=html;
+}
+
+function closeDetail(){document.getElementById('history-detail').style.display='none';document.getElementById('history-list').style.display='block';}
+function showTab(tab){
+  document.getElementById('view-list').style.display=tab==='list'?'block':'none';
+  document.getElementById('view-history').style.display=tab==='history'?'block':'none';
+  document.getElementById('tab-list').className='tab-btn'+(tab==='list'?' active':'');
+  document.getElementById('tab-history').className='tab-btn'+(tab==='history'?' active':'');
+  if(tab==='history')loadHistory();
+}
+render();
+</script>
