@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Töskur — Vaktaskiptaeftirlit</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiNFNkYxRkIiLz4KICA8dGV4dCB4PSIzMiIgeT0iNDYiIGZvbnQtc2l6ZT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCI+8J+OkjwvdGV4dD4KPC9zdmc+">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiNFNkYxRkIiLz4KICA8dGV4dCB4PSIzMiIgeT0iNDYiIGZvbnQtc2l6ZT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCI+8J+OkjwvdGV4dD4KPC9zdmc+">
+<meta name="application-name" content="Töskur Eftirlit">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Töskur Eftirlit">
+<meta name="theme-color" content="#185FA5">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f3;color:#1a1a1a;padding:16px;max-width:960px;margin:0 auto}
+.tab-btn{padding:8px 18px;font-size:14px;border:1px solid transparent;border-radius:20px;background:transparent;cursor:pointer;color:#666;font-family:inherit;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}
+.tab-btn.active{background:#fff;color:#1a1a1a;border-color:#ccc;font-weight:500}
+.group-box{border:1px solid #d0cec7;border-radius:12px;background:#fff;overflow:hidden}
+.group-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #eee}
+.g-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.g-title{font-size:15px;font-weight:600;color:#1a1a1a;flex:1}
+.g-badge{font-size:12px;padding:3px 9px;border-radius:20px;font-weight:500}
+.sec-head{display:flex;align-items:center;padding:7px 16px;background:#f8f7f4;border-bottom:1px solid #eee;border-top:1px solid #eee}
+.sec-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.06em;flex:1}
+.sec-count{font-size:11px;color:#888}
+.item-row{display:flex;align-items:center;gap:0;border-bottom:1px solid #f2efe9;background:#fff;transition:background 0.1s;overflow:hidden}
+.item-row:last-child{border-bottom:none}
+.item-row.is-done{background:#f6fdf9}
+.item-row.is-missing{background:#FFFAF5}
+.chk-ok{width:44px;min-width:44px;align-self:stretch;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #f0ede8;background:#fff;transition:background 0.12s;flex-shrink:0}
+.chk-ok:hover{background:#f0fdf8}
+.chk-ok.on{background:#1D9E75;border-right-color:#1D9E75}
+.chk-ok-inner{width:22px;height:22px;border:2px solid #bbb;border-radius:5px;display:flex;align-items:center;justify-content:center;transition:all 0.12s;position:relative;flex-shrink:0}
+.chk-ok.on .chk-ok-inner{background:#1D9E75;border-color:#fff}
+.chk-ok.on .chk-ok-inner::after{content:'';position:absolute;width:6px;height:11px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-2px)}
+.item-content{flex:1;padding:11px 12px;min-width:0}
+.item-label{font-size:15px;color:#1a1a1a;line-height:1.4}
+.item-row.is-done .item-label{text-decoration:line-through;color:#aaa}
+.item-note{font-size:11px;color:#E8A020;margin-top:2px}
+.chk-miss{width:44px;min-width:44px;align-self:stretch;display:flex;align-items:center;justify-content:center;cursor:pointer;border-left:1px solid #f0ede8;background:#fff;transition:background 0.12s;flex-shrink:0}
+.chk-miss:hover{background:#FFF8F0}
+.chk-miss.on{background:#E8A020;border-left-color:#E8A020}
+.chk-miss-inner{width:22px;height:22px;border:2px solid #bbb;border-radius:5px;display:flex;align-items:center;justify-content:center;transition:all 0.12s;font-size:13px;font-weight:700;color:#bbb;flex-shrink:0}
+.chk-miss.on .chk-miss-inner{background:#E8A020;border-color:#fff;color:#fff}
+.prog-track{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
+.prog-fill{height:6px;background:#185FA5;border-radius:3px;transition:width 0.4s ease}
+.sig-area{border:1px solid #ccc;border-radius:8px;background:#f8f7f4;cursor:crosshair;display:block;width:100%;touch-action:none}
+input[type=text],input[type=number]{padding:10px 14px;font-size:14px;border:1px solid #ccc;border-radius:8px;outline:none;color:#1a1a1a;font-family:inherit}
+input:focus{border-color:#185FA5}
+button{padding:10px 16px;font-size:14px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;color:#1a1a1a;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}
+button:hover{background:#f0ede8;border-color:#bbb}
+.btn-primary{background:#185FA5;color:#fff;border-color:#185FA5;justify-content:center;font-weight:500}
+.btn-primary:hover{background:#0f4578;border-color:#0f4578}
+.btn-warning{background:#E8A020;color:#fff;border-color:#E8A020;justify-content:center;font-weight:500}
+.btn-warning:hover{background:#c47d10;border-color:#c47d10}
+.history-row{padding:13px 16px;border:1px solid #d0cec7;border-radius:10px;background:#fff;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s}
+.history-row:hover{border-color:#999}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:400px;box-shadow:0 12px 48px rgba(0,0,0,0.22);overflow:hidden}
+.rmodal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.rmodal{background:#fff;border-radius:16px;width:100%;max-width:640px;box-shadow:0 8px 40px rgba(0,0,0,0.18);overflow:hidden;margin:auto}
+.missing-item{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:#FFF8F0;border:1px solid #FDDCB5;border-radius:8px;margin-bottom:5px}
+@media(max-width:500px){.grid{grid-template-columns:1fr!important}}
+@media print{.no-print{display:none!important}.print-only{display:block!important}}
+.print-only{display:none}
+</style>
+</head>
+<body>
+
+<div style="padding:1rem 0;max-width:960px;margin:0 auto">
+
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+    <div style="width:48px;height:48px;border-radius:12px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🎒</div>
+    <div style="flex:1;min-width:0">
+      <p style="font-size:18px;font-weight:600;color:#1a1a1a">Töskur — Vaktaskiptaeftirlit</p>
+      <p style="font-size:13px;color:#666;margin-top:2px" id="week-label"></p>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <p style="font-size:22px;font-weight:600;color:#1a1a1a" id="prog-num">0/0</p>
+      <p style="font-size:12px;color:#666" id="prog-pct">0%</p>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:14px;padding:9px 14px;background:#f8f7f4;border-radius:10px;margin-bottom:14px;border:1px solid #e8e6e0;flex-wrap:wrap">
+    <span style="font-size:12px;font-weight:500;color:#666">Lykill:</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div style="width:26px;height:26px;border-radius:5px;background:#1D9E75;position:relative;display:flex;align-items:center;justify-content:center">
+        <div style="width:6px;height:11px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)"></div>
+      </div>
+      <span style="font-size:12px;color:#555">Allt til (vinstri)</span>
+    </div>
+    <div style="width:1px;height:16px;background:#ddd"></div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div style="width:26px;height:26px;border-radius:5px;background:#E8A020;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">!</div>
+      <span style="font-size:12px;color:#555">Vantar → gluggi opnast</span>
+    </div>
+  </div>
+
+  <div class="prog-track" style="margin-bottom:18px"><div class="prog-fill" id="prog-bar" style="width:0%"></div></div>
+
+  <div style="margin-bottom:18px">
+    <div style="display:inline-flex;gap:4px;background:#eeece6;border-radius:24px;padding:4px;border:1px solid #ddd">
+      <button class="tab-btn active" id="tab-list" onclick="showTab('list')">✓ Gátlisti</button>
+      <button class="tab-btn" id="tab-history" onclick="showTab('history')">⏱ Saga</button>
+    </div>
+  </div>
+
+  <div id="view-list">
+    <div id="checklist-body" class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;align-items:start"></div>
+
+    <div style="margin-top:16px;border:1px solid #d0cec7;border-radius:12px;padding:16px;background:#fff">
+      <p style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <span style="width:28px;height:28px;border-radius:7px;background:#E6F1FB;display:inline-flex;align-items:center;justify-content:center">✍️</span>
+        Undirskrift
+      </p>
+      <canvas id="sig-canvas" class="sig-area" width="800" height="110" style="height:110px"></canvas>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <input type="text" id="signer-name" placeholder="Nafn undirritara..." style="flex:1"/>
+        <button onclick="clearSig()">🧹</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn-warning" onclick="showReport()" style="flex:1;min-width:150px">📋 Skýrsla um vöntun</button>
+      <button class="btn-primary" onclick="sendReportEmail()" style="flex:1;min-width:150px">📧 Vista og senda skýrslu</button>
+      <button onclick="resetAll()" title="Núllstilla">↺</button>
+    </div>
+    <div id="save-status" style="margin-top:10px;font-size:13px;padding:10px 14px;border-radius:8px;display:none"></div>
+  </div>
+
+  <div id="view-history" style="display:none">
+    <div id="history-list"></div>
+    <div id="history-detail" style="display:none">
+      <button onclick="closeDetail()" style="margin-bottom:14px">← Til baka</button>
+      <div id="detail-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Vantanagluggi -->
+<div class="modal-bg" id="item-modal" style="display:none">
+  <div class="modal">
+    <div style="padding:16px 20px 12px;border-bottom:1px solid #eee;display:flex;align-items:flex-start;gap:10px">
+      <div style="width:34px;height:34px;border-radius:8px;background:#FFF8F0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">⚠️</div>
+      <div style="flex:1">
+        <p style="font-size:15px;font-weight:600;color:#1a1a1a" id="modal-item-title"></p>
+        <p style="font-size:12px;color:#666;margin-top:2px">Skráðu magn sem vantar</p>
+      </div>
+    </div>
+    <div style="padding:18px 20px">
+      <p style="font-size:13px;color:#666;margin-bottom:8px">Hversu mikið vantar?</p>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+        <input type="number" id="modal-amount" placeholder="Magn" min="0" style="width:90px;text-align:center;font-size:18px;font-weight:600"/>
+        <input type="text" id="modal-unit" placeholder="stk / ml / poki..." style="flex:1;font-size:14px"/>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">Eða frjáls athugasemd:</p>
+      <input type="text" id="modal-note" placeholder="t.d. Þarf að panta, ekki til á lager..." style="width:100%;font-size:14px"/>
+    </div>
+    <div style="padding:12px 20px;border-top:1px solid #eee;display:flex;gap:8px">
+      <button onclick="closeItemModal()" style="flex:1;justify-content:center">Hætta við</button>
+      <button onclick="confirmMissing()" style="flex:1;background:#E8A020;color:#fff;border-color:#E8A020;justify-content:center;font-weight:500">💾 Vista vöntun</button>
+    </div>
+  </div>
+</div>
+
+<!-- Skýrslugluggi -->
+<div class="rmodal-bg" id="report-modal" style="display:none" onclick="closeReportOnBg(event)">
+  <div class="rmodal">
+    <div style="padding:18px 20px 14px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:12px">
+      <div style="width:38px;height:38px;border-radius:10px;background:#FFF0D6;display:flex;align-items:center;justify-content:center;font-size:20px">📋</div>
+      <div style="flex:1">
+        <p style="font-size:16px;font-weight:600;color:#1a1a1a">Skýrsla um vöntun</p>
+        <p style="font-size:12px;color:#666" id="report-subtitle"></p>
+      </div>
+      <button onclick="closeReport()" style="border:none;background:none;font-size:20px;color:#999;cursor:pointer;padding:4px">✕</button>
+    </div>
+    <div style="padding:20px;max-height:60vh;overflow-y:auto" id="report-body"></div>
+    <div style="padding:14px 20px;border-top:1px solid #eee;display:flex;gap:8px">
+      <button onclick="printReport()" style="flex:1;justify-content:center">🖨️ Prenta</button>
+      <button onclick="closeReport()" style="flex:1;justify-content:center">Loka</button>
+    </div>
+  </div>
+</div>
+
+<div class="print-only" id="print-area"></div>
+
+<script>
+const REPORT_EMAIL='slokkvilid@isafjordur.is';
+const DB_KEY='toskur_41101_v1';
+
+const groupDefs=[
+  {title:"Rauð taska",icon:"🎒",bg:"#FCEBEB",subs:[
+    {label:"Neðra hólf framan",items:["Snarvöndull","Skæri","Blóðsykursmælir","BÞ-mælir","Hitamælir","Hlustunarpípa tvær stærðir","Púls/oxy mælir"]},
+    {label:"Efra hólf framan",items:["10ml NaCl prefill x6","Penthrox","Sykurgel x2"]},
+    {label:"IV taska — efra hólf framan",items:["Blár æðaleggur 2x","Bleikur æðaleggur 2x","Grænn æðaleggur 2x","IN lúður x4","1ml sprautur 4x","2ml sprautur 5x","5ml sprautur 3x","3-way loki","IV plástrar x3-6","Stasi + gúmmístasar","Tuffur og grisjur","Tappi á æðalegg","10ml NaCl prefill 2x","Svartar stungunálar 4x","Gular stungunálar 4-6x","Bláar stungunálar 4x","Beikar uppdráttarnálar 8x","Teip"]},
+    {label:"Aðalhólf",items:["500ml NaCl","Vökvasett","Nálabox","Taska m grisjum og teygjub.","Taska m borvél","Lyfjataska","120ml NaCl","Chest seal"]}
+  ]},
+  {title:"Rauð taska — IO búnaður",icon:"💉",bg:"#FCEBEB",subs:[
+    {label:null,items:["IO borvél","Gul IO nál","Blá IO nál","Bleik IO nál","3-way lokar 3x","IO borvél (vara)"]}
+  ]},
+  {title:"O2 taska blá",icon:"💨",bg:"#E6F1FB",subs:[
+    {label:"Neðra hólf framan",items:["Makiltöng stór","Makiltöng lítil","CAPNO f/ túpur 2x (2 stærðir)","Taska f/ ET túpur","Xylocane gel","Brúnt teip","Blöð fyrir skóp 4 stærðir","5ml sprauta","10ml sprauta","Sogleggur 2 stærðir","Laringascope"]},
+    {label:"Taska f. ET túpur",items:["ET túpur stærðir 3-8 1x af hverri"]},
+    {label:"Efra hólf framan",items:["Kokrennur 4cm-11cm 1 stykki af hverju","I-Gel blár 1,5","I-Gel grá 2","I-Gel gul 3","I-Gel græn 4","I-Gel appelsínugul 5","Sleipigel","CAPNO f/ túpur","2x tunguspaði"]}
+  ]},
+  {title:"O2 taska blá — Aðalhólf",icon:"🫁",bg:"#E6F1FB",subs:[
+    {label:null,items:["Blástursbelgur barna","Blástursbelgur fullorðins","Nefrennur 4 stk. 4-9","Öndunarvél","Barki f. Öndunarvél","Thorax Dren"]}
+  ]},
+  {title:"O2 taska græn",icon:"🟢",bg:"#EAF3DE",subs:[
+    {label:"Vasi ofan",items:["Friðarpípa","Maski m. sarp fullorðins","Maski m. sarp barna","O2 gleraugu","O2 gleraugu m/ CAPNO","CAPNO fyrir túpur 2 stærðir"]},
+    {label:"Vasi hlið",items:["CPAP"]},
+    {label:"Aðalhólf",items:["3L O2 kútur"]}
+  ]},
+  {title:"LifePak 12",icon:"🫀",bg:"#FBEAF0",subs:[
+    {label:"Hægrahólf",items:["Elektróður","Rafskaut (patch) fullorðin","Rafskaut börn","Púls/oxy barna","Rakvél — ATH. Rafhlöðusöðu"]}
+  ]}
+];
+
+let state={};
+function key(g,sub,item){return g.title+':::'+(sub.label||'')+':::'+item;}
+groupDefs.forEach(g=>g.subs.forEach(sub=>sub.items.forEach(item=>{state[key(g,sub,item)]={done:false,missing:false,note:''};})));
+let currentModalKey=null;
+
+function getWeekLabel(){
+  const now=new Date(),day=now.getDay(),diff=now.getDate()-day+(day===0?-6:1);
+  const mon=new Date(now);mon.setDate(diff);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  const fmt=d=>d.toLocaleDateString('is-IS',{day:'numeric',month:'long'});
+  const wn=d=>{const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const dn=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-dn);const ys=new Date(Date.UTC(dt.getUTCFullYear(),0,1));return Math.ceil((((dt-ys)/86400000)+1)/7);};
+  return 'Vika '+wn(mon)+' · '+fmt(mon)+' – '+fmt(sun);
+}
+document.getElementById('week-label').textContent=getWeekLabel();
+
+function render(){
+  const body=document.getElementById('checklist-body');body.innerHTML='';
+  let total=0,done=0;
+  groupDefs.forEach(g=>{
+    let gT=0,gD=0;
+    g.subs.forEach(sub=>sub.items.forEach(item=>{const k=key(g,sub,item);gT++;total++;if(state[k].done){gD++;done++;}}));
+    const allDone=gD===gT;
+    const box=document.createElement('div');box.className='group-box';
+    let html=`<div class="group-head"><div class="g-icon" style="background:${g.bg}">${g.icon}</div>
+      <span class="g-title">${g.title}</span>
+      <span class="g-badge" style="background:${allDone?'#E1F5EE':'#f0ede8'};color:${allDone?'#085041':'#888'}">${gD}/${gT}</span></div>`;
+    g.subs.forEach(sub=>{
+      let sd=0;sub.items.forEach(item=>{if(state[key(g,sub,item)].done)sd++;});
+      if(sub.label)html+=`<div class="sec-head"><span class="sec-label">${sub.label}</span><span class="sec-count">${sd}/${sub.items.length}</span></div>`;
+      sub.items.forEach(item=>{
+        const k=key(g,sub,item);const s=state[k];
+        const ek=k.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        const safeItem=item.replace(/'/g,"\\'");
+        const rowClass=s.done?'is-done':s.missing?'is-missing':'';
+        html+=`<div class="item-row ${rowClass}">
+          <div class="chk-ok ${s.done?'on':''}" onclick="toggleDone('${ek}')"><div class="chk-ok-inner"></div></div>
+          <div class="item-content">
+            <div class="item-label">${item}</div>
+            ${s.missing&&s.note?`<div class="item-note">📝 ${s.note}</div>`:''}
+            ${s.missing&&!s.note?`<div class="item-note">⚠️ Vantar</div>`:''}
+          </div>
+          <div class="chk-miss ${s.missing?'on':''}" onclick="clickMissing('${ek}','${safeItem}',event)"><div class="chk-miss-inner">!</div></div>
+        </div>`;
+      });
+    });
+    box.innerHTML=html;body.appendChild(box);
+  });
+  const pct=total>0?Math.round((done/total)*100):0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-num').textContent=done+'/'+total;
+  document.getElementById('prog-pct').textContent=pct+'%';
+}
+
+function toggleDone(k){state[k].done=!state[k].done;if(state[k].done){state[k].missing=false;state[k].note='';}render();}
+
+function clickMissing(k,itemName,e){
+  e.stopPropagation();
+  if(state[k].missing){state[k].missing=false;state[k].note='';render();return;}
+  state[k].done=false;
+  currentModalKey=k;
+  document.getElementById('modal-item-title').textContent=itemName;
+  document.getElementById('modal-amount').value='';
+  document.getElementById('modal-unit').value='';
+  document.getElementById('modal-note').value='';
+  document.getElementById('item-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('modal-amount').focus(),150);
+}
+
+function closeItemModal(){document.getElementById('item-modal').style.display='none';currentModalKey=null;}
+
+function confirmMissing(){
+  if(!currentModalKey)return;
+  const amount=document.getElementById('modal-amount').value.trim();
+  const unit=document.getElementById('modal-unit').value.trim();
+  const freeNote=document.getElementById('modal-note').value.trim();
+  let note='';
+  if(amount)note='Vantar '+amount+(unit?' '+unit:'');
+  if(freeNote)note=note?note+' — '+freeNote:freeNote;
+  state[currentModalKey].missing=true;
+  state[currentModalKey].note=note||'';
+  closeItemModal();render();
+}
+
+function resetAll(){
+  if(!confirm('Hreinsa alla hakaninga, vöntun og undirskrift?'))return;
+  Object.keys(state).forEach(k=>{state[k]={done:false,missing:false,note:''};});
+  clearSig();document.getElementById('signer-name').value='';
+  document.getElementById('save-status').style.display='none';render();
+}
+
+function getMissingItems(){
+  const missing=[];
+  groupDefs.forEach(g=>{
+    const gm=[];
+    g.subs.forEach(sub=>sub.items.forEach(item=>{
+      const k=key(g,sub,item);
+      if(!state[k].done)gm.push({item,sublabel:sub.label,note:state[k].note,explicit:state[k].missing});
+    }));
+    if(gm.length)missing.push({group:g,items:gm});
+  });
+  return missing;
+}
+
+function buildEmailBody(){
+  const missing=getMissingItems();
+  const signer=document.getElementById('signer-name').value||'Óþekkt';
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  let body='Vaktaskiptaeftirlit — Töskur\n=====================================\n';
+  body+='Vika: '+getWeekLabel()+'\nUndirritari: '+signer+'\n';
+  body+='Dagsetning: '+new Date().toLocaleString('is-IS')+'\n';
+  body+='Staða: '+done+'/'+total+' liðir yfirfarnir\nVantar: '+(total-done)+' liðir\n\n';
+  if(!missing.length){body+='✅ Allar töskur eru í lagi.\n';}
+  else{
+    const merktar=missing.filter(g=>g.items.some(i=>i.explicit));
+    const oyfirfarid=missing.filter(g=>g.items.some(i=>!i.explicit));
+    if(merktar.length){
+      body+='BÚNAÐUR SEM VANTAR (merkt):\n---------------------------\n';
+      merktar.forEach(({group,items})=>{
+        const mi=items.filter(i=>i.explicit);if(!mi.length)return;
+        body+='\n'+group.title+':\n';
+        let lastLabel=null;
+        mi.forEach(({item,sublabel,note})=>{
+          if(sublabel&&sublabel!==lastLabel){body+='  ['+sublabel+']\n';lastLabel=sublabel;}
+          body+='  • '+item+(note?' — '+note:'')+'\n';
+        });
+      });
+    }
+    if(oyfirfarid.length){
+      body+='\nÓYFIRFARIÐ (ekki hakað):\n------------------------\n';
+      oyfirfarid.forEach(({group,items})=>{
+        const oi=items.filter(i=>!i.explicit);if(!oi.length)return;
+        body+='\n'+group.title+':\n';
+        let lastLabel=null;
+        oi.forEach(({item,sublabel})=>{
+          if(sublabel&&sublabel!==lastLabel){body+='  ['+sublabel+']\n';lastLabel=sublabel;}
+          body+='  • '+item+'\n';
+        });
+      });
+    }
+  }
+  body+='\n---\nSent sjálfkrafa úr vaktaskiptakerfi.';
+  return body;
+}
+
+function getLocalRecords(){try{const v=localStorage.getItem(DB_KEY);return v?JSON.parse(v):[]}catch(e){return[];}}
+function saveLocalRecords(r){try{localStorage.setItem(DB_KEY,JSON.stringify(r));}catch(e){}}
+
+function sendReportEmail(){
+  const name=document.getElementById('signer-name').value.trim();
+  const statusEl=document.getElementById('save-status');
+  statusEl.style.display='block';
+  if(!name){statusEl.style.background='#fde8e8';statusEl.style.color='#c0392b';statusEl.textContent='Skrifaðu nafn undirritara.';return;}
+  if(!isSigned()){statusEl.style.background='#fde8e8';statusEl.style.color='#c0392b';statusEl.textContent='Ritsalaðu á undirskriftarsvæðið.';return;}
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  const missing=getMissingItems();
+  const record={id:Date.now(),week:getWeekLabel(),date:new Date().toISOString(),signer:name,signature:canvas.toDataURL('image/png'),total,done,missing_count:total-done,state:JSON.parse(JSON.stringify(state))};
+  const recs=getLocalRecords();recs.unshift(record);saveLocalRecords(recs);
+  const hasMissing=missing.length>0;
+  const subject=encodeURIComponent(hasMissing
+    ?'⚠️ Vaktaskiptaeftirlit Töskur — '+getWeekLabel()+' — '+(total-done)+' liðir vantar'
+    :'✅ Vaktaskiptaeftirlit Töskur — '+getWeekLabel()+' — Allt í lagi');
+  const a=document.createElement('a');
+  a.href='mailto:'+REPORT_EMAIL+'?subject='+subject+'&body='+encodeURIComponent(buildEmailBody());
+  a.click();
+  statusEl.style.background=hasMissing?'#fff3cd':'#e8f5e9';
+  statusEl.style.color=hasMissing?'#856404':'#0F6E56';
+  statusEl.textContent=hasMissing
+    ?'✓ Vistað — tölvupóstur opnaður á '+REPORT_EMAIL+' með '+(total-done)+' vöntunarlíðum.'
+    :'✓ Vistað — tölvupóstur á '+REPORT_EMAIL+'. Allar töskur yfirfarnar!';
+}
+
+function showReport(){
+  const missing=getMissingItems();
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  document.getElementById('report-subtitle').textContent=getWeekLabel()+' · '+(total-done)+' liðir vantar';
+  const body=document.getElementById('report-body');
+  if(!missing.length){
+    body.innerHTML='<div style="text-align:center;padding:32px 20px"><div style="font-size:48px;margin-bottom:12px">✅</div><p style="font-size:17px;font-weight:600;color:#0F6E56;margin-bottom:6px">Allt í lagi!</p><p style="font-size:14px;color:#666">Allar töskur yfirfarnar.</p></div>';
+  } else {
+    const merktar=missing.flatMap(g=>g.items.filter(i=>i.explicit).map(i=>({...i,group:g.group})));
+    const oyfirfarid=missing.flatMap(g=>g.items.filter(i=>!i.explicit).map(i=>({...i,group:g.group})));
+    let html='';
+    if(merktar.length){
+      html+='<div style="background:#FFF8F0;border:1px solid #FDDCB5;border-radius:10px;padding:12px 16px;margin-bottom:12px"><p style="font-size:14px;font-weight:600;color:#854F0B">⚠️ Merkt sem vantar ('+merktar.length+' liðir)</p></div>';
+      const byGroup={};merktar.forEach(i=>{const t=i.group.title;if(!byGroup[t])byGroup[t]={group:i.group,items:[]};byGroup[t].items.push(i);});
+      Object.values(byGroup).forEach(({group,items})=>{
+        html+='<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:600;color:#666;text-transform:uppercase;margin-bottom:6px">'+group.icon+' '+group.title+'</div>';
+        items.forEach(({item,sublabel,note})=>{
+          html+='<div class="missing-item"><div style="width:8px;height:8px;border-radius:50%;background:#E8A020;flex-shrink:0;margin-top:5px"></div><div><div style="font-size:14px">'+item+(sublabel?' <span style="color:#aaa;font-size:12px">('+sublabel+')</span>':'')+'</div>'+(note?'<div style="font-size:12px;color:#E8A020;margin-top:2px">📝 '+note+'</div>':'')+'</div></div>';
+        });html+='</div>';
+      });
+    }
+    if(oyfirfarid.length){
+      html+='<div style="background:#f8f7f4;border:1px solid #ddd;border-radius:10px;padding:12px 16px;margin-bottom:12px;margin-top:'+(merktar.length?'16px':'0')+'"><p style="font-size:14px;font-weight:600;color:#666">🔲 Óyfirfarið ('+oyfirfarid.length+' liðir)</p></div>';
+      const byGroup={};oyfirfarid.forEach(i=>{const t=i.group.title;if(!byGroup[t])byGroup[t]={group:i.group,items:[]};byGroup[t].items.push(i);});
+      Object.values(byGroup).forEach(({group,items})=>{
+        html+='<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;margin-bottom:6px">'+group.icon+' '+group.title+'</div>';
+        items.forEach(({item,sublabel})=>{
+          html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f8f7f4;border:1px solid #e0e0e0;border-radius:8px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:50%;background:#bbb;flex-shrink:0"></div><span style="font-size:14px">'+item+(sublabel?' <span style="color:#aaa;font-size:12px">('+sublabel+')</span>':'')+'</span></div>';
+        });html+='</div>';
+      });
+    }
+    body.innerHTML=html;
+  }
+  document.getElementById('report-modal').style.display='flex';
+}
+
+function printReport(){
+  const missing=getMissingItems();
+  const signer=document.getElementById('signer-name').value||'Óþekkt';
+  let total=0,done=0;Object.keys(state).forEach(k=>{total++;if(state[k].done)done++;});
+  let html='<div style="font-family:Arial,sans-serif;padding:20px;max-width:700px;margin:0 auto"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;border-bottom:3px solid #185FA5;padding-bottom:12px"><span style="font-size:28px">🎒</span><div><h1 style="font-size:18px;margin:0">Töskur — Vaktaskiptaeftirlit</h1><p style="font-size:13px;color:#666;margin:2px 0 0">'+getWeekLabel()+'</p></div><div style="margin-left:auto;text-align:right"><p style="font-size:13px">Undirritari: <strong>'+signer+'</strong></p><p style="font-size:13px">Dagsetning: <strong>'+new Date().toLocaleDateString('is-IS')+'</strong></p></div></div><p style="font-size:14px;color:#185FA5;margin-bottom:16px"><strong>'+done+'/'+total+'</strong> liðir yfirfarnir</p>';
+  if(!missing.length){html+='<p style="color:#0F6E56;font-weight:bold">✅ Allar töskur eru í lagi.</p>';}
+  else{
+    const merktar=missing.flatMap(g=>g.items.filter(i=>i.explicit).map(i=>({...i,group:g.group})));
+    const oyfirfarid=missing.flatMap(g=>g.items.filter(i=>!i.explicit).map(i=>({...i,group:g.group})));
+    if(merktar.length){
+      html+='<h2 style="font-size:14px;color:#854F0B;margin-bottom:8px">⚠️ Merkt sem vantar:</h2>';
+      const byGroup={};merktar.forEach(i=>{const t=i.group.title;if(!byGroup[t])byGroup[t]={group:i.group,items:[]};byGroup[t].items.push(i);});
+      Object.values(byGroup).forEach(({group,items})=>{
+        html+='<div style="margin-bottom:10px"><h3 style="font-size:12px;color:#555;text-transform:uppercase;margin-bottom:4px">'+group.icon+' '+group.title+'</h3>';
+        items.forEach(({item,note})=>{html+='<div style="padding:6px 10px;background:#FFF8F0;border:1px solid #FDDCB5;border-radius:5px;margin-bottom:3px;font-size:13px">● '+item+(note?' — '+note:'')+'</div>';});
+        html+='</div>';
+      });
+    }
+    if(oyfirfarid.length){
+      html+='<h2 style="font-size:14px;color:#666;margin:12px 0 8px">🔲 Óyfirfarið:</h2>';
+      const byGroup={};oyfirfarid.forEach(i=>{const t=i.group.title;if(!byGroup[t])byGroup[t]={group:i.group,items:[]};byGroup[t].items.push(i);});
+      Object.values(byGroup).forEach(({group,items})=>{
+        html+='<div style="margin-bottom:10px"><h3 style="font-size:12px;color:#888;text-transform:uppercase;margin-bottom:4px">'+group.icon+' '+group.title+'</h3>';
+        items.forEach(({item})=>{html+='<div style="padding:6px 10px;background:#f8f7f4;border:1px solid #ddd;border-radius:5px;margin-bottom:3px;font-size:13px">○ '+item+'</div>';});
+        html+='</div>';
+      });
+    }
+  }
+  html+='<div style="margin-top:20px;padding-top:12px;border-top:1px solid #ddd"><p style="font-size:12px;font-weight:bold;margin-bottom:6px">Undirskrift:</p><img src="'+canvas.toDataURL('image/png')+'" style="max-width:260px;border:1px solid #ddd;border-radius:6px"/></div><div style="margin-top:16px;font-size:11px;color:#999">Prentað: '+new Date().toLocaleString('is-IS')+'</div></div>';
+  const printDiv=document.getElementById('print-area');printDiv.style.display='block';printDiv.innerHTML=html;window.print();setTimeout(()=>{printDiv.style.display='none';},1000);
+}
+
+function closeReport(){document.getElementById('report-modal').style.display='none';}
+function closeReportOnBg(e){if(e.target===document.getElementById('report-modal'))closeReport();}
+
+const canvas=document.getElementById('sig-canvas');
+const ctx=canvas.getContext('2d');
+let drawing=false;
+function gp(e){const r=canvas.getBoundingClientRect();const sx=canvas.width/r.width;const sy=canvas.height/r.height;const s=e.touches?e.touches[0]:e;return{x:(s.clientX-r.left)*sx,y:(s.clientY-r.top)*sy};}
+canvas.addEventListener('mousedown',e=>{drawing=true;const p=gp(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=gp(e);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#185FA5';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();});
+canvas.addEventListener('mouseup',()=>drawing=false);
+canvas.addEventListener('mouseleave',()=>drawing=false);
+canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=gp(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
+canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=gp(e);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#185FA5';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();},{passive:false});
+canvas.addEventListener('touchend',()=>drawing=false);
+function clearSig(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+function isSigned(){const d=ctx.getImageData(0,0,canvas.width,canvas.height).data;for(let i=3;i<d.length;i+=4)if(d[i]>0)return true;return false;}
+
+function loadHistory(){
+  const listEl=document.getElementById('history-list');
+  const records=getLocalRecords();
+  if(!records.length){listEl.innerHTML='<p style="font-size:14px;color:#888;padding:16px 0">Engar vistaðar yfirferðir enn.</p>';return;}
+  listEl.innerHTML='';
+  records.forEach(r=>{
+    const row=document.createElement('div');row.className='history-row';
+    const ok=r.done===r.total;
+    row.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><p style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:2px">'+r.week+'</p><p style="font-size:13px;color:#666">Undirritað: '+r.signer+' · '+new Date(r.date).toLocaleString('is-IS')+'</p>'+(r.missing_count>0?'<p style="font-size:12px;color:#E8A020;margin-top:3px">⚠️ '+r.missing_count+' liðir vantaði</p>':'')+'</div><div style="text-align:right;flex-shrink:0"><p style="font-size:18px;font-weight:600;color:'+(ok?'#0F6E56':'#E8A020')+'">'+r.done+'/'+r.total+'</p><p style="font-size:12px;color:#666">'+Math.round((r.done/r.total)*100)+'%</p></div></div>';
+    row.onclick=()=>showDetail(r);listEl.appendChild(row);
+  });
+}
+
+function showDetail(r){
+  document.getElementById('history-list').style.display='none';
+  document.getElementById('history-detail').style.display='block';
+  const el=document.getElementById('detail-content');
+  let html='<div style="border:1px solid #d0cec7;border-radius:12px;padding:16px;background:#fff;margin-bottom:14px"><p style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:3px">'+r.week+'</p><p style="font-size:13px;color:#666;margin-bottom:12px">'+new Date(r.date).toLocaleString('is-IS')+' · Undirritað: '+r.signer+'</p><img src="'+r.signature+'" style="width:100%;border-radius:8px;border:1px solid #ddd;max-height:100px;object-fit:contain" alt="Undirskrift"/></div><div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;align-items:start">';
+  groupDefs.forEach(g=>{
+    let gT=0,gD=0;g.subs.forEach(sub=>sub.items.forEach(item=>{const k=key(g,sub,item);gT++;if(r.state&&r.state[k]&&r.state[k].done)gD++;}));
+    html+='<div class="group-box"><div class="group-head"><div class="g-icon" style="background:'+g.bg+'">'+g.icon+'</div><span class="g-title">'+g.title+'</span><span class="g-badge" style="background:'+(gD===gT?'#E1F5EE':'#f0ede8')+';color:'+(gD===gT?'#085041':'#888')+'">'+gD+'/'+gT+'</span></div>';
+    g.subs.forEach(sub=>{
+      if(sub.label)html+='<div class="sec-head"><span class="sec-label">'+sub.label+'</span></div>';
+      sub.items.forEach(item=>{
+        const k=key(g,sub,item);const s=r.state&&r.state[k];
+        const done=s&&s.done;const missing=s&&s.missing;const note=s&&s.note;
+        html+='<div class="item-row '+(done?'is-done':missing?'is-missing':'')+'" style="cursor:default"><div class="chk-ok '+(done?'on':'')+'" style="cursor:default"><div class="chk-ok-inner"></div></div><div class="item-content"><div class="item-label">'+item+'</div>'+(note?'<div class="item-note">📝 '+note+'</div>':'')+'</div><div class="chk-miss '+(missing?'on':'')+'" style="cursor:default"><div class="chk-miss-inner">!</div></div></div>';
+      });
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function closeDetail(){document.getElementById('history-detail').style.display='none';document.getElementById('history-list').style.display='block';}
+function showTab(tab){
+  document.getElementById('view-list').style.display=tab==='list'?'block':'none';
+  document.getElementById('view-history').style.display=tab==='history'?'block':'none';
+  document.getElementById('tab-list').className='tab-btn'+(tab==='list'?' active':'');
+  document.getElementById('tab-history').className='tab-btn'+(tab==='history'?' active':'');
+  if(tab==='history')loadHistory();
+}
+render();
+</script>
+</body>
+</html>
